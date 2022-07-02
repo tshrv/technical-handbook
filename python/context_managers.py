@@ -44,17 +44,19 @@ class ContextManagedDBClient(DBClient):
 
 @contextmanager
 def context_managed_dbclient(host, port, database):
-    # build
-    logger.info('building')
-    client = DBClient(host, port, database)
-    client.connect()
+    try:
+        # build
+        logger.info('building')
+        client = DBClient(host, port, database)
+        client.connect()
 
-    # yield
-    yield client
-
-    # teardown
-    client.disconnect()
-    logger.info('teardown')
+        # yield
+        yield client
+    
+    finally:
+        # teardown
+        client.disconnect()
+        logger.info('teardown')
 
 def main():
     host = 'HOST'
