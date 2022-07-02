@@ -1,3 +1,9 @@
+"""
+super()
+super(SubClass, sub_class_instance) -> A proxy object representing the superclasses
+super(...).attr -> Finds the <attr> from the MRO(C3 Linearization) of the proxy object
+"""
+
 from loguru import logger as lg
 
 
