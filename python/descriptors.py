@@ -1,51 +1,73 @@
+from loguru import logger as lg
+
+
+class EmailDescriptor:
+    def __init__(self, value=None) -> None:
+        self._value = value
+    
+    def __get__(self, obj, objtype):
+        lg.debug('pre-get operations')
+        return self._value
+    
+    def __set__(self, obj, email):
+        lg.debug('pre-set operations')
+        self._value = email
+    
+    
 class User:
-    def __init__(self, name: str, age: int) -> None:
-        self.name = name
-        self.age = age
+    # class based descriptor
+    email = EmailDescriptor()
+
+    def __init__(self, name: str, age: int, email: str) -> None:
+        self._name = name
+        self._age = age
+
+        # class based descriptor
+        self.email = email
+        # self.email = EmailDescriptor(value=email) # does not work this way
 
     # ---- property getter and setter w/ decorators ----
-    # @property def x: ...
-    # @x.setter def x: ...
-    # @x.deleter def x: ...
+    # @property def age: ...
+    # @age.setter def age: ...
+    # @age.deleter def age: ...
 
-    # @property
-    # def user_name(self) -> str:
-    #     return self.name
+    @property
+    def age(self) -> int:
+        lg.debug('pre-get checks')
+        return self._age
     
-    # # @user_name.setter
-    # # def user_name(self, value) -> None:
-    # #     self.name = value
-    
-    # @user_name.setter
-    # def user_name(self, value) -> None:
-    #     raise AttributeError('cannot update value')
-
+    @age.setter
+    def age(self, value) -> None:
+        lg.debug('pre-set checks')
+        if not isinstance(value, int):
+            raise ValueError(f'age should be of type {int} not {type(value)}')
+        self._age = value
 
     # ---- property getter and setter w/o decorators ----    
     # property(fget, fset, fdel)
     
-    def user_name_getter(self) -> str:
-        return self.name
+    def name_getter(self) -> str:
+        lg.debug('pre-get checks')
+        return self._name
     
-    # def user_name_setter(self, value: str) -> None:
-    #     self.name = value
-    
-    def user_name_setter(self, value: str) -> None:
-        raise AttributeError('Cannot update value')
-    
-    user_name = property(user_name_getter, user_name_setter)
+    def name_setter(self, value: str) -> None:
+        lg.debug('pre-set checks')
+        self._name = value
+        
+    name = property(name_getter, name_setter)
 
 
-user = User('Tushar', 26)
-print(user)
-print(vars(user))
+user = User('Tushar', 26, 'foo@bar.com')
+lg.debug(user)
+lg.debug(vars(user))
 
-print('Accessing user_name')
-print(user.user_name)
+lg.debug('Access')
+lg.debug((user.name, user.age, user.email))
 
-print('Setting user_name')
-user.user_name = user.user_name.lower()
+lg.debug('Update')
+user.name = user.name.lower()
+user.age = user.age + 1
+user.email = 'foo+1@bar.com'
 
-print('Accessing user_name')
-print(user.user_name)
-
+lg.debug('Access')
+lg.debug((user.name, user.age, user.email))
