@@ -4,6 +4,7 @@ When a function that has a yield statement is called, it returns a generator.
 This generator is not callable but it can be iterated over just like an iterable.
 On top of it, it implements send and throw methods that allow two-way communication, it somewhat maintains a state
 We cannot send a value to a just started generator but when atleast one time called, we can send values as well as exceptions
+Similar to iterators, it also stops with a StopIteration error, and also can be explicitly closed by x.close()
 """
 
 from loguru import logger as lg
