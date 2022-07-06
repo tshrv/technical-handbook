@@ -178,3 +178,12 @@ def main():
 
 
 main()
+
+
+from functools import partial
+
+
+# pow x, n
+pow
+sq = partial(pow, exp=2)
+
