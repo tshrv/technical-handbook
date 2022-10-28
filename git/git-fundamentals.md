@@ -63,10 +63,56 @@ c0--c1--|
 
 ## Ramping Up
 The next serving of 100% git awesomes-ness. Hope you're hungry.
+Moving around in Git
+Before we get to some of the more advanced features of Git, it's important to understand different ways to move through the commit tree that represents your project.
+Once you're comfortable moving around, your powers with other git commands will be amplified
 
 #### 1. Detach the HEAD
+First we have to talk about `"HEAD"`. HEAD is the symbolic name for the currently checked out commit -- it's essentially what commit you're working on top of.
+HEAD always points to the most recent commit which is reflected in the working tree. Most git commands which make changes to the working tree will start by changing HEAD.
+Normally HEAD points to a branch name (like bugFix). When you commit, the status of bugFix is altered and this change is visible through HEAD.
+Detaching HEAD just means attaching it to a commit instead of a branch. This is what it looks like beforehand: `HEAD -> main -> C1`
+`git checkout c1`
+And now it's `HEAD -> C1`
+
+Queries
+- why detach HEAD? solution to which problem?
 
 #### 2. Relative refs
+Moving around in Git by specifying commit hashes can get a bit tedious. In the real world you won't have a nice commit tree visualization next to your terminal, so you'll have to use git log to see hashes.
+Furthermore, hashes are usually a lot longer in the real Git world as well. For instance, the hash of the commit that introduced the previous level is `fed2da64c0efc5293610bdd892f82a58e8cbc5d8`. Doesn't exactly roll off the tongue...
+The upside is that Git is smart about hashes. It only requires you to specify enough characters of the hash until it uniquely identifies the commit. So I can type `fed2` instead of the long string above.
+
+Like I said, specifying commits by their hash isn't the most convenient thing ever, which is why Git has relative refs. They are awesome!
+With relative refs, you can start somewhere memorable (like the branch bugFix or HEAD) and work from there.
+Relative commits are powerful, but we will introduce two simple ones here:
+Moving `upwards one commit` at a time with `^`
+Moving `upwards a number of times` with `~<num>`
+
+Let's look at the `Caret (^)` operator first. Each time you append that to a ref name, you are telling Git to find the parent of the specified commit.
+So saying `main^` is equivalent to `"the first parent of main"`.
+`main^^` is the grandparent `(second-generation ancestor)` of main
+
+You can also reference `HEAD` as a relative ref.
+Easy! We can travel backwards in time with `HEAD^`
+`git checkout HEAD^` moves `HEAD` one commit up, thus moving back in time.
+`git checkout HEAD~5` move 5 commits up
+`git checkout HEAD~0` points to where `HEAD` currently points
+
+Git also has the `tilde (~) operator`.
+The tilde operator (optionally) takes in a trailing number that specifies the number of parents you would like to ascend.
+
+**Branch Forcing**
+One of the most common ways I use relative refs is to move branches around. You can directly reassign a branch to a commit with the `-f` option.
+
+`git branch -f main HEAD~3` moves (by force) the main branch to three parents behind HEAD.
+
+```
+c0--c1--c2--c3(*main)
+git branch -f main HEAD~2
+c0--c1(*main)--c2--c3
+```
+Relative refs gave us a concise way to refer to C1 and branch forcing (-f) gave us a way to quickly move a branch to that location.
 
 #### 3. Reverse changes
 
