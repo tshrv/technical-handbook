@@ -16,6 +16,7 @@ Branches in Git are incredibly lightweight as well. They are simply pointers to 
 Because there is no storage / memory overhead with making many branches, it's easier to logically divide up your work than have big beefy branches.
 When we start mixing branches and commits, we will see how these two features combine. For now though, just remember that a branch essentially says "I want to include the work of this commit and all parent commits."
 - create a branch `git branch <new-branch-name>`
+- create a branch at a ref `git branch <new-branch-name> <ref>`
 
 On branch `main`, at commit `c1`, `git branch dev` will create a new branch `dev` which will also point to commit `c1` at that point.
 
@@ -183,20 +184,103 @@ c5 - pick, after seeing what is in there
 c0<--c1<--c2'<--c5'(main*,HEAD)
       ^--c2<--c3<--c4<--c5
 ```
+
 ## Mixed bag
 A mixed bag of Git techniques, tricks, and tips.
+
 #### 1. Grabbing Just 1 Commit
+```
+c0<--c1(main*)<--c2(debug)<--c3(print)<--c4(bugfix)
+```
+This can be solved via interactive rebase as well as cherry picking.  
+**Interactive Rebase**
+```
+c0<--c1(main*)<--c2(debug)<--c3(print)<--c4(bugfix)
+
+git checkout bugfix
+git rebase -i main
+c0<--c1(main)<--c2(debug)<--c3(print)<--c4
+      ^--c4'(bugfix*)
+
+git checkout main
+git merge bugfix
+c0<--c1<--c2(debug)<--c3(print)<--c4
+      ^--c4'(main*,bugfix)
+```
+
+**Cherry Picking**
+```
+c0<--c1(main*)<--c2(debug)<--c3(print)<--c4(bugfix)
+
+git checkout main
+git cherry-pick bugfix
+
+c0<--c1<--c2(debug)<--c3(print)<--c4(bugfix)
+      ^--c4'(main*)
+
+git checkout main
+git merge bugfix
+c0<--c1<--c2(debug)<--c3(print)<--c4
+      ^--c4'(main*,bugfix)
+```
 
 #### 2. Juggling Commits
+`c0<--c1<--c2<--c3(*main)` We may need to make change to an earlier commit `c2`.
+
+**via Interactive rebase**
+- We will re-order the commits so the one we want to change is on top with `git rebase -i`
+- We will `git commit --amend` to make the slight modification
+- Then we will re-order the commits back to how they were previously with `git rebase -i`
+- Finally, we will move main to this updated part of the tree to finish the level (via the method of your choosing)
+
+A lot of reordering involved, this can introduce conflicts.  
+
+**via cherry picking**
 
 #### 2. Tags
+Since branches are always moving with more work is committed, a permanent way to mark some specific commits (like releases, big merges, etc.)
+
+`git tag t1` -> marks `t1` tag to whatever `HEAD` points to.  
+`git tag t2 c1` -> marks `t2` tag to `c2` commit. 
+
+`git checkout t1` -> `HEAD` detached and moved to `t1`
 
 #### 2. Describe
+Because tags serve as such great "anchors" in the codebase, git has a command to describe where you are relative to the closest "anchor" (aka tag). And that command is called `git describe`!
+
+`git describe <ref>`  
+Where `<ref>` is anything git can resolve into a commit. If you don't specify a ref, git just uses where you're checked out right now (`HEAD`).  
+
+The output of the command looks like:
+
+`<tag>_<numCommits>_g<hash>`
+
+Where `tag` is the closest ancestor tag in history, `numCommits` is how many commits away that tag is, and `<hash>` is the hash of the commit being described.
+
 
 ## Advanced
 For the truly brave!
 #### 1. Rebasing over 9000 times
+Simply use rebase :P
 
 #### 2. Multiple parents
+Like the `~` modifier, the `^` modifier also accepts an optional number after it, but it decides **which parent** to go for while moving up merge commits(a commit having two parents)
 
+**First / Second Parent** -> Created Earlier / Later in time.  
+
+```
+c0<--c1<--c2<--c4(main*)
+      ^--c3<--'
+
+git checkout main^ => first parent => c2
+git checkout main^2 => second parent => c3
+
+```
+They can be chained together as well
+```
+git checkout HEAD~^2~2
+~ => one commit up
+^2 => one commit up to second parent
+~2 => two commits up
+```
 #### 2. Branch Spaghetti
