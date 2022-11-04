@@ -13,15 +13,28 @@ c0<--c1(main)
 ```
 **Local**
 ```
-c0<--c1(main*,o/main)
+c0<--c1(main*,origin/main)
 ```
-We are on branch `main` but there also exists another branch `o/main` which is on the remote.
+We are on branch `main` but there also exists another branch `origin/main` which is on the remote.
 ```
-branch-name => from host
-remote-name/branch-name => from remote
+branch-name => from local, present locally
+remote-name/branch-name => from remote, present locally
 ```
 
 ### 2. Remote branches
+Remote branches reflect the state of remote repositories (since you last talked to those remote repositories). They help you understand the difference between your local work and what work is public.
+
+Remote branches have the special property that when you check them out, you are put into `detached HEAD` mode. Git does this on purpose because you **can't work** on these branches directly; you have to work elsewhere and then share your work with the `remote` (after which your remote branches will be updated).
+
+To be clear: Remote branches are on your local repository, not on the remote repository.
+```
+c0<--c1(main*,origin/main)
+git checkout origin/main
+git commit
+c0<--c1(main,origin/main)<--c2(HEAD) # detached HEAD
+```
+`origin/main` will only update when the remote updates.
+
 ### 3. Git Fetchin'
 ### 4. Git Pullin'
 ### 5. Faking Teamwork
