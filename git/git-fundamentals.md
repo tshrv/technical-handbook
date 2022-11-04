@@ -115,7 +115,32 @@ c0--c1(*main)--c2--c3
 Relative refs gave us a concise way to refer to C1 and branch forcing (-f) gave us a way to quickly move a branch to that location.
 
 #### 3. Reverse changes
+There are many ways to reverse changes in Git. And just like committing, reversing changes in Git has both a low-level component (staging individual files or chunks) and a high-level component (how the changes are actually reversed).
 
+There are two primary ways to undo changes in Git -- one is using `git reset` and the other is using `git revert`.
+
+`git reset` reverses changes by moving a branch reference backwards in time to an older commit. In this sense you can think of it as "rewriting history;" git reset will move a branch backwards as if the commit had never been made in the first place.
+`git reset HEAD~1` move Head one point up
+```
+c1<--c2(main*)
+c1<--c2<--c3(main*)
+git reset HEAD~1
+c1<--c2(main*)<--c3
+c1<--c2<--c4(main*)
+      ^--c3
+```
+
+`git revert` While resetting works great for local branches on your own machine, its method of **"rewriting history" doesn't work for remote branches that others are using**.
+
+In order to reverse changes and share those reversed changes with others, we need to use git revert. Let's see it in action.
+
+```
+c1<--c2(main*)
+c1<--c2<--c3(main*)
+git revert HEAD
+c1<--c2<--c3<--c3'(main*)
+c1<--c2<--c3<--c3'<--c4(main*)
+```
 
 ## Moving work around
 "Git" comfortable with modifying the source tree :P
