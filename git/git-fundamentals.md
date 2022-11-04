@@ -284,3 +284,4 @@ git checkout HEAD~^2~2
 ~2 => two commits up
 ```
 #### 2. Branch Spaghetti
+Simply using `rebase`, `rebase -i` and `cherry-pick` to move the source tree around.
