@@ -144,7 +144,23 @@ c1<--c2<--c3<--c3'<--c4(main*)
 
 ## Moving work around
 "Git" comfortable with modifying the source tree :P
+It's a way for developers to say "I want this work here and that work there" in precise, eloquent, flexible ways.
+
 #### 1. Cherrypick
+`git cherry-pick <Commit1> <Commit2> <...>`
+You would like to **copy a series of commits** below your current location (`HEAD`).
+
+```
+
+c1<--c2<--c3(main*)
+      ^--c4<--c5<--c6(side)
+```
+We selectively want to pick commits `c4` and `c6` and add it below current `HEAD`.
+on branch main: `git cherry-pick c4 c6`
+```
+c1<--c2<--c3<--c4'<--c6'(main*)
+      ^--c4<--c5<--c6(side)
+```
 
 #### 2. Interactive rebase
 
