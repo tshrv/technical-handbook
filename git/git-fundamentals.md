@@ -163,7 +163,26 @@ c1<--c2<--c3<--c4'<--c6'(main*)
 ```
 
 #### 2. Interactive rebase
+Cherrypicking is good when we know which commits we need to copy, i.e. we know their hashed. But what about when we do not know which commits we are looking for?  
+Interactive rebasing allows us to review a series of commits we are about to rebase.  
+Using the `rebase` command with the `-i` option, it will open up a UI to show you which commits are about to be copied below the target of the rebase. It also shows their commit hashes and messages, which is great for getting a bearing on what's what.  
+It is worth mentioning that in the **real git interactive rebase** you can do many more things like `squashing (combining) commits`, `amending commit messages`, and even `editing the commits` themselves.  
 
+```
+c0<--c1<--c2<--c3<--c4<--c5(main*, HEAD)
+
+git rebase -i HEAD~4
+This meand rebase current HEAD / main to HEAD~4 interactively.
+Difference between current HEAD and HEAD~4(c1) => c2, c3, c4, c5
+c2 - pick, after seeing what is in there
+c3 - omit, after seeing what is in there
+c4 - omit, after seeing what is in there
+c5 - pick, after seeing what is in there
+**order of the commits, commit messages, and more, can also be changed here**
+
+c0<--c1<--c2'<--c5'(main*,HEAD)
+      ^--c2<--c3<--c4<--c5
+```
 ## Mixed bag
 A mixed bag of Git techniques, tricks, and tips.
 #### 1. Grabbing Just 1 Commit
