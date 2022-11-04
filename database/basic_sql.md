@@ -211,6 +211,52 @@ select dogs.id ID, dogs.gender_code Gender, ddb.BREED_NAME Breed, ddl.CITY_NAME 
 from dogs join dim_dog_breed as ddb on dogs.DOG_BREED_ID = ddb.id join dim_dog_location as ddl on dogs.dog_location_id = ddl.id;
 ```
 
+**Cross Join**
+Cross product of two tables. Join each row with each row.
+Resulting table mxn
+
+```
+SELECT 
+    p.PetName,
+    pt.PetType
+FROM Pets p 
+CROSS JOIN PetTypes pt;
+```
+is same as the following -
+```
+SELECT 
+    p.PetName,
+    pt.PetType
+FROM Pets p, PetTypes pt;
+```
+Adding a `WHERE` clause will turn this into a `INNER` join.
+```
+SELECT 
+    p.PetName,
+    pt.PetType
+FROM Pets p
+CROSS JOIN PetTypes pt
+WHERE p.PetTypeId = pt.PetTypeId;
+```
+
+**Natural Join**
+Joining relations on common column name, so do not specify column name. This will turn into Natural Inner join.
+```
+SELECT 
+    Pets.PetName,
+    PetTypes.PetType
+FROM Pets NATURAL INNER JOIN PetTypes;
+```
+If no common column name found, result will be a `CROSS` join.
+
+**Self Join**
+Join a table to itself. Table has reference to itself. Like employee reports to another employee.
+```
+select p1.EmployeeID EID, p1.Name, p1.Position, p2.EmployeeID RM_EID, p2.Name RM_Name, p2.Position RM_Position
+from physician p1, physician p2
+where p1.ReportsTo = p2.EmployeeID;
+```
+
 **Aliases**
 An alias allows you to temporarily assign another name to a table or column for the duration of a SELECT query. This can be particularly useful when tables and/or columns have very long or complex names.  
 
