@@ -3,6 +3,24 @@ Working with remote repositories.
 
 ##  Push & Pull -- Git Remotes! 
 ### 1. Clone intro
+```
+git clone
+```
+
+**Remote**
+```
+c0<--c1(main)
+```
+**Local**
+```
+c0<--c1(main*,o/main)
+```
+We are on branch `main` but there also exists another branch `o/main` which is on the remote.
+```
+branch-name => from host
+remote-name/branch-name => from remote
+```
+
 ### 2. Remote branches
 ### 3. Git Fetchin'
 ### 4. Git Pullin'
