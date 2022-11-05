@@ -109,10 +109,26 @@ c0<--c1<--c2<-------------c4(main*)
       ^--c3(origin/main)--'
 ```
 
-### 5. Faking Teamwork
-### 6. Git Pushin'
-### 7. Diverged history
-### 8. Locked main
+### 5. Git Pushin'
+`git push` is responsible for uploading your changes to a specified `remote` and updating that remote to incorporate your new commits.
+__note --__ the **behavior** of git push with no arguments varies depending on one of git's settings called `push.default`. The default value for this setting depends on the version of git you're using, but we are going to use the `upstream` value in our lessons.
+```
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(origin/main)<--c2(main*)
+
+git push
+# step 1 - update remote
+c0<--c1<--c2(main)
+
+# step 2 - update local
+c0<--c1<--c2(origin/main, main*)
+```
+
+### 6. Diverged history
+### 7. Locked main
 
 
 ##  To Origin And Beyond -- Advanced Git Remotes! 
