@@ -66,6 +66,49 @@ However, it does not change anything about your local state. It will not update 
 
 
 ### 4. Git Pullin'
+Let's update our work to reflect the fetched changes. There are actually many ways to do this -- once you have new commits available locally, you can incorporate them as if they were just normal commits on other branches. This means you could execute commands like:
+- `git cherry-pick o/main`
+- `git rebase o/main`
+- `git merge o/main`
+Workflow of fetching remote changes and then merging them is so common that git actually provides a command that does both at once! That command is `git pull`.
+
+```
+# remote
+c0<--c1<--c3(main)
+
+# local
+c0<--c1(origin/main)<--c2(main*)
+
+# on branch main
+git fetch
+
+# local - now we have new commits on origin/main
+c0<--c1<--c2(main*)
+      ^--c3(origin/main)
+
+# update main to reflect changes from origin/main
+git merge origin/main
+
+# local
+c0<--c1<--c2<-------------c4(main*)
+      ^--c3(origin/main)--'
+
+```
+
+`git pull` is essentially shorthand for a `git fetch` followed by a `merge` of whatever branch was just fetched.
+```
+# remote
+c0<--c1<--c3(main)
+
+# local
+c0<--c1(origin/main)<--c2(main*)
+
+git pull
+# local
+c0<--c1<--c2<-------------c4(main*)
+      ^--c3(origin/main)--'
+```
+
 ### 5. Faking Teamwork
 ### 6. Git Pushin'
 ### 7. Diverged history
