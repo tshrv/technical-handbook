@@ -95,7 +95,7 @@ c0<--c1<--c2<-------------c4(main*)
 
 ```
 
-`git pull` is essentially shorthand for a `git fetch` followed by a `merge` of whatever branch was just fetched.
+`git pull` is essentially shorthand for a `git fetch` followed by a `git merge` of whatever branch was just fetched.
 ```
 # remote
 c0<--c1<--c3(main)
@@ -108,6 +108,11 @@ git pull
 c0<--c1<--c2<-------------c4(main*)
       ^--c3(origin/main)--'
 ```
+
+**Important**
+- `git pull` - fetch and merge, creates a merge commit.
+- `git pull --rebase` - fetch and rebase, without a merge commit.
+
 
 ### 5. Git Pushin'
 `git push` is responsible for uploading your changes to a specified `remote` and updating that remote to incorporate your new commits.
@@ -128,8 +133,142 @@ c0<--c1<--c2(origin/main, main*)
 ```
 
 ### 6. Diverged history
-### 7. Locked main
+Where history has diverged, git doesn't allow you to `push` your changes. It actually forces you to incorporate the latest state of the remote before being able to share your work.
+```
+# remote
+c0<--c1(main)
 
+# local
+c0<--c1(origin/main, main*)
+```
+Now let's say our peers have pushed some code to the remote and we have made some commits locally as well.
+```
+# remote
+c0<--c1<--c2(main)
+
+# local
+c0<--c1(origin/main)<--c3(main*)
+```
+A `git push` will fail because based on current state of local and remote, the branch `origin/main` points to two different commits.
+Thus we need to incorporate those changes, from remote to our local and then.  
+
+**How do you resolve this situation?** It's easy, all you need to do is base your work off of the most recent version of the remote branch.  
+There are a **few ways** to do this, but the **most straightforward** is to **move your work via rebasing**. Let's go ahead and see what that looks like.
+
+```
+# remote
+c0<--c1<--c2(main)
+
+# local
+c0<--c1(origin/main)<--c3(main*)
+git push -- fails, branched have diverged.
+```
+
+`git pull` does a fetch and merge, let's try `git fetch` and `git rebase` (or, `git pull --rebase` to do everything together) for a cleaner/linear commit history.
+
+```
+git fetch
+
+# local
+c0<--c1<--c3(main*)
+      ^--c2(origin/main)
+
+git rebase origin/main
+c0<--c1<--c3
+      ^--c2(origin/main)<--c3'(main*)
+    
+git push
+
+# remote
+c0<--c1<--c2<--c3'(main)
+
+# local
+c0<--c1<--c2<--c3'(main*, origin/main)
+
+# or, instead of fetch and merge, simply use
+git pull --rebase
+git push
+```
+We updated our local representation of the remote with `git fetch`, `rebased` our work to reflect the new changes in the remote, and then pushed them with `git push`.  
+
+Although `git merge` doesn't move your work (and instead just creates a `merge commit`), it's a way to tell git that you have incorporated all the changes from the remote. This is because the remote branch is now an ancestor of your own branch, meaning your commit reflects all commits in the remote branch.
+
+```
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(origin/main)<--c3(main*)
+
+# remote - received some changes from someplace else
+c0<--c1<--c2(main)
+
+# on branch main in local
+git fetch
+
+# local
+c0<--c1<--c3(main*)
+      ^--c2(origin/main)
+
+git merge origin/main
+# local
+c0<--c1<--c3<--------------c4(main*)[merge_commit]
+      ^--c2(origin/main)--'
+
+git push
+# remote - new changes received
+c0<--c1<--c2<--,
+      ^--c3<----c4(main)
+
+# local - changes reflect in remote branch
+c0<--c1<--c3<--c4(main*,origin/main)[merge_commit]
+      ^--c2---'
+```
+
+
+### 7. Locked main
+In a large collaborative team it's likely that main is locked and requires some **Pull Request** process to merge changes.  
+If you commit directly to main locally and try pushing you will be greeted with a message similar to this:
+```
+! [remote rejected] main -> main (TF402455: Pushes to this branch are not permitted; you must use a pull request to update this branch.) 
+```
+You meant to follow the process creating a branch then pushing that branch and doing a pull request, but you forgot and committed directly to main.  
+
+**Solution** - Create another branch called `feature` and push that to the remote. Also reset your main back to be in sync with the remote otherwise you may have issues next time you do a pull and someone else's commit conflicts with yours.  
+
+```
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(origin/main, main*)
+```
+By mistake we made some commits on `main` and now we are stuck since `push` on `main` is not allowed.
+
+```
+# local
+c0<--c1(origin/main)<--c2(main*)
+```
+
+Let's create a new branch `feature` for our changes. `push` it to remote. And sync `main` back to `origin/main`
+
+```
+git branch feature
+c0<--c1(origin/main)<--c2(main*,feature)
+
+git branch -f main origin/main
+c0<--c1(origin/main,main*)<--c2(feature)
+
+git checkout feature
+c0<--c1(origin/main,main)<--c2(feature*)
+
+git push
+# remote
+c0<--c1(main)<--c2(feature)
+
+# local
+c0<--c1(origin/main,main)<--c2(feature*,origin/feature)
+```
 
 ##  To Origin And Beyond -- Advanced Git Remotes! 
 ### 1. Push main
