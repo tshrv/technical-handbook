@@ -332,5 +332,26 @@ c0<--c1(origin/main)<--c2(main*,origin/newBranch)
 ```
 
 ### 5. Fetch arguments
+
+`git fetch origin foo` Git will go to the `foo` branch on the remote, grab all the commits that aren't present locally, and then plop them down onto the `origin/foo` branch locally.
+```
+# remote
+c0<--c1(main)<--c2<--c3(foo)
+
+# local
+c0<--c1(main,origin/main,foo,origin/foo)
+
+git fetch origin foo
+
+# local
+c0<--c1(main,origin/main,foo)<--c2<--c3(origin/foo)
+```
+
+`git fetch remote source:destination` Here source is the ref on remote and destination is the ref on local.  
+
+`git fetch origin foo:side` instructs git to get changes from `foo` on `origin` and put it on `side` on local. Provided, `side` does not have any commit which isn't already on `origin foo`. This will not update the `origin/foo` which was supposed to be the default destination because we explicitly stated the destination where we needed the changes.  
+
+Just like `push`, if the destination does not exist on local, it will be created.
+
 ### 6. Source of nothing
 ### 7. Pull arguments
