@@ -354,4 +354,45 @@ c0<--c1(main,origin/main,foo)<--c2<--c3(origin/foo)
 Just like `push`, if the destination does not exist on local, it will be created.
 
 ### 6. Source of nothing
+**Oddities of `<source>`** Git abuses the `<source>` parameter in two weird ways. These two abuses come from the fact that you can technically specify **"nothing"** as a valid source for both `git push` and `git fetch`. The way you specify nothing is via an empty argument:
+- `git push origin :side`
+- `git fetch origin :bugFix`
+
+**`git push origin :foo`** Deleted branch `foo` on both local and remote.
+```
+# remote
+c0<--c1(main,foo)
+
+# local
+c0<--c1(main,origin/main,foo,origin/foo)
+
+git push origin :foo
+
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(main,origin/main)
+```
+**Deletes** This operation deleted the destination location both on remote and on local. "By pushing the concept of NOTHING to it".
+
+**`git fetch origin :bar`** Creates branch `bar` on local
+```
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(main,origin/main)
+
+git fetch origin :bar
+
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(main,origin/main,bar)
+```
+**Creates** This operation created the destination location on local. "By fetching the concept of NOTHING to it".
+
+
 ### 7. Pull arguments
