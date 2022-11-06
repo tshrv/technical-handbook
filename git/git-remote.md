@@ -274,7 +274,63 @@ c0<--c1(origin/main,main)<--c2(feature*,origin/feature)
 ### 1. Push main
 ### 2. Merging with remotes
 ### 3. Remote tracking
+`git checkout -b not_main origin/main` Now branch `not_main` is set to **track** and work with `main` on remote.  
+Previously set default tracking of `main` to `origin/main` is automatically removed.
+
 ### 4. Git push arguments
+```
+git push <remote> <place>
+
+<place> on local will be synchronized with its tracking branch on <remote>
+```
+`git push origin main` Go to the branch named `main` in my repository, grab all the commits, and then go to the branch `main` on the remote named `origin`(**tracking branch on remote**). Place whatever commits are missing on that branch and then tell me when you're done.  
+By specifying `main` as the `place` argument, we told git where the commits will come from and where the commits will go. It's essentially the `place` or `location` to synchronize between the two repositories.
+> Keep in mind that since we told git everything it needs to know (by specifying both arguments), it totally ignores where we are checked out!
+
+**colon refspec**
+In order to specify both the **source** and the **destination** of `<place>`, simply join the two together with a colon:
+`git push origin <source>:<destination>` -- It does not matter where you are currently checked out at.
+
+```
+git push origin <source>:<destination>
+# push changes from local.source to origin.destination
+
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(main,origin/main)<--c2<--c3(foo*)
+
+# send changes till c2 to main on remote
+git push origin foo^:main
+
+# remote
+c0<--c1<--c2(main)
+
+# local
+c0<--c1(main)<--c2(origin/main)<--c3(foo*)
+```
+
+Git resolved `foo^` into a location, uploaded whatever commits that weren't present yet on the remote, and then updated destination.
+
+If the destination branch on remote does not exist, it'll be created.
+```
+# remote
+c0<--c1(main)
+
+# local
+c0<--c1(origin/main)<--c2(main*)
+
+# send changes till local.main to remote.newBranch
+git push origin main:newBranch
+
+# remote
+c0<--c1(main)<--c2(newBranch)
+
+# local
+c0<--c1(origin/main)<--c2(main*,origin/newBranch)
+```
+
 ### 5. Fetch arguments
 ### 6. Source of nothing
 ### 7. Pull arguments
