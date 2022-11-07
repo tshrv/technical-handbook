@@ -396,3 +396,29 @@ c0<--c1(main,origin/main,bar)
 
 
 ### 7. Pull arguments
+`git pull` at the end of the day is really just shorthand for a `fetch` followed by `merging` in whatever was just fetched. You can think of it as running `git fetch` with the **same arguments** specified and then merging in where those commits ended up.
+
+`git pull origin foo` is equal to `git fetch origin foo; git merge origin/foo;`  
+`git pull origin bar~1:bugFix` is equal to `git fetch origin bar~1:bugFix; git merge bugFix;`
+
+```
+# remote
+c0<--c1<--c2(main)
+
+# local
+c0<--c1(main,origin/main)<--c3(bar*)
+
+git pull origin main:foo
+
+# local - create destination branch foo since it does not exist
+c0<--c1(main,origin/main,foo)<--c3(bar*)
+
+# local - fetch all changes from origin.main to local.foo
+c0<--c1(main,origin/main)<--c3(bar*)
+      ^--c2(foo)
+
+# local - since pull is fetch + merge, merge to currently checked out branch bar via a merge commit (rebase if --rebase supplied)
+c0<--c1(main,origin/main)<--c3<--c4(bar*)
+      ^--c2(foo)<----------------'
+```
+Wow, that's a TON in one command. We created a new branch locally named `foo`, downloaded commits from remote's `main` onto that branch `foo`, and then `merged` that branch into our currently checked out branch `bar`.
