@@ -1,6 +1,6 @@
 # Basic SQL
 
-```
+```sql
 select <column name>
 from <table name>
 where <condition>;
@@ -19,7 +19,7 @@ views (pre-made queries)
 setting permissions on database objects (such as tables, stored procedures, and views).
 
 --------------------------------
-```
+```sql
 CREATE DATABASE PetHotel;
 
 USE PetHotel;
@@ -41,7 +41,7 @@ Although primary keys are not required, it’s generally considered good practic
 
 ### FOREIGN KEY
 Let’s create two more tables:
-```
+```sql
 CREATE TABLE Owners
 (
     OwnerId     int NOT NULL PRIMARY KEY,
@@ -68,7 +68,7 @@ Prevents bad data from being entered into the database.
 In database terms, a CHECK constraint is a type of constraint that checks data before it enters the database.
 
 CHECK constraints help maintain data integrity, because they prevent invalid data entering the database.
-```
+```sql
 CREATE TABLE Products( 
     ProductId INTEGER PRIMARY KEY, 
     ProductName, 
@@ -82,7 +82,7 @@ Table-level CHECK constraint might look like this: `CHECK (Price >= Discount)`
 
 ### Comment
 
-```
+```sql
 SELECT * FROM Pets; --This is a comment
 
 -- This is a comment
@@ -96,7 +96,7 @@ it's spread across multiple lines
 
 ### Insert Data
 
-```
+```sql
 INSERT INTO MyTable( Column1, Column2, Column3, ... )
 VALUES( Value1, Value2, Value3, ... );
 
@@ -109,21 +109,21 @@ VALUES( 1, 2, 3, 'Fluffy', '2020-12-20' );
 
 ### Select operations
 
-```
+```sql
 SELECT PetId, DOB
 FROM Pets
 WHERE PetName = 'Fluffy';
 ```
 
 **Ordering** on single column
-```
+```sql
 SELECT PetId, PetName, DOB 
 FROM Pets
 ORDER BY PetName ASC[or, DESC];
 ```
 
 Ordering on multiple columns
-```
+```sql
 SELECT PetId, PetName, DOB 
 FROM Pets
 ORDER BY PetName DESC, DOB ASC;
@@ -131,14 +131,14 @@ ORDER BY PetName DESC, DOB ASC;
 
 **Count**  
 You can use the COUNT() aggregate function to count the rows that will be returned in a query.
-```
+```sql
 SELECT COUNT(*) AS Count
 FROM Pets;
 ```
 You can also specify a particular column to count. The `COUNT()` function **only counts non-NULL results**, so if you specify a column that contains NULL values, those values won’t be counted.
 
 **Grouping**  
-```
+```sql
 SELECT 
     PetTypeId, 
     COUNT(PetTypeId) AS Count
@@ -149,7 +149,7 @@ ORDER BY Count DESC;
 
 **Having**
 We can use the HAVING clause to `filter the results in the GROUP BY clause`. The HAVING clause returns rows where aggregate values meet specified conditions.
-```
+```sql
 SELECT 
     PetTypeId, 
     COUNT(PetTypeId) AS Count
@@ -166,7 +166,7 @@ ORDER BY Count DESC;
   - Right Outer Join
   - Full Outer Join
 
-```
+```sql
 SELECT 
     PetTypes.PetType,
     COUNT(Pets.PetTypeId) AS Count
@@ -184,7 +184,7 @@ ORDER BY Count DESC;
 +-----------+---------+
 ```
 
-```
+```sql
 SELECT 
     Pets.PetName,
     PetTypes.PetType
@@ -206,7 +206,7 @@ ON Pets.PetTypeId = PetTypes.PetTypeId;
 ```
 
 Join more than two tabled together  
-```
+```sql
 select dogs.id ID, dogs.gender_code Gender, ddb.BREED_NAME Breed, ddl.CITY_NAME City
 from dogs join dim_dog_breed as ddb on dogs.DOG_BREED_ID = ddb.id join dim_dog_location as ddl on dogs.dog_location_id = ddl.id;
 ```
@@ -215,7 +215,7 @@ from dogs join dim_dog_breed as ddb on dogs.DOG_BREED_ID = ddb.id join dim_dog_l
 Cross product of two tables. Join each row with each row.
 Resulting table mxn
 
-```
+```sql
 SELECT 
     p.PetName,
     pt.PetType
@@ -223,14 +223,14 @@ FROM Pets p
 CROSS JOIN PetTypes pt;
 ```
 is same as the following -
-```
+```sql
 SELECT 
     p.PetName,
     pt.PetType
 FROM Pets p, PetTypes pt;
 ```
 Adding a `WHERE` clause will turn this into a `INNER` join.
-```
+```sql
 SELECT 
     p.PetName,
     pt.PetType
@@ -241,7 +241,7 @@ WHERE p.PetTypeId = pt.PetTypeId;
 
 **Natural Join**
 Joining relations on common column name, so do not specify column name. This will turn into Natural Inner join.
-```
+```sql
 SELECT 
     Pets.PetName,
     PetTypes.PetType
@@ -251,7 +251,7 @@ If no common column name found, result will be a `CROSS` join.
 
 **Self Join**
 Join a table to itself. Table has reference to itself. Like employee reports to another employee.
-```
+```sql
 select p1.EmployeeID EID, p1.Name, p1.Position, p2.EmployeeID RM_EID, p2.Name RM_Name, p2.Position RM_Position
 from physician p1, physician p2
 where p1.ReportsTo = p2.EmployeeID;
@@ -260,7 +260,7 @@ where p1.ReportsTo = p2.EmployeeID;
 **Aliases**
 An alias allows you to temporarily assign another name to a table or column for the duration of a SELECT query. This can be particularly useful when tables and/or columns have very long or complex names.  
 
-```
+```sql
 SELECT 
     p.PetName AS Pet,
     pt.PetType AS "Pet Type"
@@ -281,7 +281,7 @@ ON p.PetTypeId = pt.PetTypeId;
 
 **Update Data**
 
-```
+```sql
 UPDATE Owners
 SET LastName = 'Stallone'
 WHERE OwnerId = 3;
@@ -289,18 +289,18 @@ WHERE OwnerId = 3;
 
 **Delete Data**
 Deleting some records from the table.  
-```
+```sql
 DELETE FROM Owners
 WHERE OwnerId = 5;
 ```
 
 Deleting all records from the table, table remains.  
-```
+```sql
 DELETE FROM Owners;
 ```
 
 **Drop Objects**
-```
+```sql
 DROP TABLE Customers;
 DROP DATABASE Retail;
 ```
@@ -308,14 +308,14 @@ DROP DATABASE Retail;
 ### SQL Operators
 
 **The Equals (=) Operator**
-```
+```sql
 SELECT PetId, PetName, DOB 
 FROM Pets
 WHERE PetName = 'Fluffy';
 ```
 
 **The Greater Than (>) Operator**
-```
+```sql
 SELECT PetName, DOB 
 FROM Pets
 WHERE DOB > '2020-01-01';
@@ -326,7 +326,7 @@ WHERE DOB > '2020-01-01';
 
 **The AND Operator**
 The AND operator combines two Boolean expressions and returns TRUE when both expressions are TRUE.
-```
+```sql
 SELECT PetId, DOB 
 FROM Pets
 WHERE PetName = 'Fluffy'
@@ -335,7 +335,7 @@ AND DOB > '2020-01-01';
 
 **The OR Operator**
 **The BETWEEN Operator**
-```
+```sql
 SELECT
     PetName,
     DOB
@@ -352,7 +352,7 @@ WHERE DOB BETWEEN '2018-01-01' AND '2020-01-01';
 **The NOT Operator**
 The NOT operator negates a Boolean input (it reverses the value of any Boolean expression). Therefore returns TRUE when the expression is FALSE.
 
-```
+```sql
 SELECT
     PetName,
     DOB
@@ -363,7 +363,7 @@ WHERE DOB NOT BETWEEN '2018-01-01' AND '2020-01-01';
 **The IN Operator**
 The IN operator determines whether a specified value matches any value in a `subquery` or a `list`.  
 
-```
+```sql
 SELECT 
     PetId, 
     PetName, 
@@ -380,7 +380,7 @@ WHERE PetName IN ('Fluffy', 'Bark', 'Wag');
 +---------+-----------+------------+
 ```
 
-```
+```sql
 SELECT 
     PetTypeId,
     PetType
@@ -406,7 +406,7 @@ WHERE PetTypeId NOT IN ( SELECT PetTypeId FROM Pets );
 The `+` and `||` string concatenation operators allows you concatenate strings. String concatenation is the operation of joining character strings end-to-end.  
 The `+` operator is supported in `SQL Server`, and the `||` operator is supported in `DB2`, `Oracle`, `PostgreSQL`, `SQLite`.  
 If you’re using `MySQL` or `MariaDB`, you’ll need to use the `CONCAT()` function to concatenate strings.
-```
+```sql
 SELECT 
     FirstName,
     LastName,
@@ -425,7 +425,7 @@ FROM Owners;
 **The LIKE Operator**
 - `%`: any number of characters
 - `*`: exactly one character
-```
+```sql
 SELECT 
     FirstName,
     LastName,
@@ -441,7 +441,7 @@ WHERE Email LIKE '%.com';
 +-------------+------------+-------------------+
 ```
 
-```
+```sql
 SELECT 
     FirstName,
     LastName,
@@ -457,7 +457,7 @@ WHERE Email LIKE 'bart@%.com';
 
 ### Views
 In SQL, a view is a query that’s saved to the database as a database object (just like a table). The term can also be used to refer to the result set of a stored query. Views are often referred to as `virtual tables`.
-```
+```sql
 CREATE VIEW vPetTypeCount AS
 SELECT 
     PetTypes.PetType,
@@ -481,7 +481,7 @@ Any `change to the relations` associated with the view, will be `reflected` whil
 View is more like an `abstraction` used to hide compelxity of a query, and make it `reusable` and follow `DRY` principle.
 
 The SQL standard **does not allow** the `ORDER BY` clause in any `view definition`. Also, most RDBMSs will raise an error if you try to include an ORDER BY clause.  
-```
+```sql
 SELECT * FROM vPetTypeCount
 ORDER BY Count DESC;
 +-----------+---------+
@@ -495,14 +495,14 @@ ORDER BY Count DESC;
 
 ### Stored Procedures
 A stored procedure is a series of SQL statements compiled and saved to the database. Stored procedures are similar to views in some respects, but very different in other respects.  
-```
+```sql
 Stored procedure = View + parameters + conditional programming (if-else) + loops + more ...
 ```
 Pretty much like `functions` in a programming language.  
 
 Different DBMSs have different ways / implementations of procedures.
 
-```
+```sql
 CREATE PROCEDURE uspGetPetById
     @PetId int
 AS
@@ -561,3 +561,9 @@ For a requirement that isn't catered by inbuilt functions.
 Datetime, string formatting, datatype conversion, etc.  
 
 Views and relations are not involved here.
+
+### Indexes
+
+### Dump Data
+
+### Load Data
