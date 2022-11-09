@@ -80,6 +80,18 @@ alter table employee rename column designation_id to department_id;
 alter table employee add column designation_id int not null references department(id);
 ```
 
+### Auto-populating timestamp
+- `created_at` set to current timestamp on creation
+- `last_updated_at` set to current timestamp on creation as well as on every update on table.
+```sql
+create table employee(
+	id serial primary key,
+	name varchar(60) not null,
+	created_at timestamp default now(),
+	last_updated_at timestamp default now()
+);
+```
+
 ### Auto-incrementing Column
 **Sequence**
 
@@ -227,3 +239,38 @@ end; $$
 - Does not return a value. You cannot `return expression;`
 - Can use the return statement without the expression to stop the stored procedure immediately, `return;`
 - If you want to return a value from a stored procedure, you can use parameters with the `inout`(passed in as arguments, updated in procedure and returned in the end) mode.
+
+### Trigger
+- A PostgreSQL trigger is a function invoked automatically whenever an event associated with a table occurs. An event could be any of the following: `INSERT`, `UPDATE`, `DELETE` or `TRUNCATE`.
+- A trigger is a special **user-defined function** associated with a **table**.
+- Two main types of triggers: `row-level` and `statement-level` triggers. The differences between the two kinds are how many times the trigger is invoked and at what time.
+- Create a trigger function using `CREATE FUNCTION` statement.
+- Bind the trigger function to a table by using `CREATE TRIGGER` statement.
+
+A trigger function is similar to a regular user-defined function. However, a trigger function does not take any arguments and has a return value with the type `trigger`.
+
+```sql
+CREATE FUNCTION trigger_function() 
+   RETURNS TRIGGER 
+   LANGUAGE PLPGSQL
+AS $$
+BEGIN
+   -- trigger logic
+END;
+$$
+```
+
+- A trigger function receives data about its calling environment through a special structure called `TriggerData` which contains a set of local variables.
+- `OLD` and `NEW` represent the states of the row in the table before or after the triggering event.
+- Also provides other local variables preceded by `TG_` such as `TG_WHEN`, and `TG_TABLE_NAME`.
+- Once you define a trigger function, you can **bind** it to one or more trigger events such as `INSERT`, `UPDATE`, and `DELETE`.
+
+```sql
+CREATE TRIGGER trigger_name 
+   {BEFORE | AFTER} { event }
+   ON table_name
+   [FOR [EACH] { ROW | STATEMENT }]
+       EXECUTE PROCEDURE trigger_function
+```
+- Row-level trigger that is specified by the `FOR EACH ROW` clause.
+- Statement-level trigger that is specified by the `FOR EACH STATEMENT` clause.
