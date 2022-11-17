@@ -1,0 +1,10 @@
+- Select related
+  - one to one fields or foreign key, single related value, via joins
+- Prefetch related
+  - for many to many relations or reverse foreign keys, set of values, not by join but fetched tabled and manipulated within python
+- Inheritance models
+  - Abstract Model
+  - Proxy Model
+  - Mutli Table Inheritance
+- Aggregation
+- Group and order by
