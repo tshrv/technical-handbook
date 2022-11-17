@@ -38,6 +38,8 @@ Namespaces are one honking great idea -- let's do more of those!
 logger.info(body_message)
 
 import os
+import time
+
 dir_path = '/data'
 logger.debug(f"What's inside {dir_path} you asked?")
 try:
@@ -47,3 +49,10 @@ except FileNotFoundError as e:
 
 exit_message = 'Exiting app'
 logger.info(exit_message)
+
+i = 1
+
+while True:
+    logger.info(f'still running #{i}')
+    i += 1
+    time.sleep(4)
