@@ -1,0 +1,83 @@
+details
+company
+technologies
+
+technical questions
+non tech
+
+queries
+- team size
+- current challenge
+- what we have and what we want in near future
+- what IOT project we have right now?
+- 
+
+crop protection
+    life sciences
+seeds - dna genome of crops
+data analytics
+
+
+
+python
+pyspark
+glue jobs
+aws lambda, s3, glue, api gateway, etc.
+redshift - sql with complex logics
+jenkins
+sonarcube
+
+7 diff teams, separate stakeholder, 
+created backlog
+work under scrum
+3 week sprints
+epam and infosys employees
+guidelines how to work with data 108 pages document
+
+3 years, no deadlines as of now.
+
+pyspark - convert
+
+
+
+pyspark
+convert - parquet format
+stores data to s3
+store to 
+
+complex query
+in: diff parquet forms
+out: combine in structured data -> db.table
+
+We run a lot of these pipelines
+db overloaded - 99%
+do not scale db - 
+
+
+Team size ?
+Andrei's
+7-10 people
+stakeholder created backlog, team handles later
+2-3 QA, rest devs
+
+day to day responsibilities -
+- 
+granularity - NIO - guy from crop proc
+req from another team, non-nio sub projects
+
+
+
+challenge -
+- load into db
+- half a thousand pipelines
+- wrong scheduling
+- non-optimised codes
+- 1TB data
+
+dynamodb 
+dynamodb gax - inmemory data grid
+cache
+
+
+std calls 2 hours ago, 9am cet
+europe and east.
