@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ffc-qa
+  labels:
+    cost_object: "27000"
+    team_code: ffc
