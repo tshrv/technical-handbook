@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: easy-peasy
+  name: easy-peasy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: easy-peasy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: easy-peasy
+    spec:
+      containers:
+      - command: ["sleep", "infinity"]
+        image: quay.io/playpit/busybox:1.32
+        name: busybox
+        resources: {}
+status: {}
