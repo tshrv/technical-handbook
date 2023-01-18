@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tsrivastava-app
+    role: mainapp
+    tier: backend
+    student: tsrivastava
+  name: tsrivastava-app
+  namespace: exam-check-02
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tsrivastava-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tsrivastava-app
+        role: mainapp
+        tier: backend
+        student: tsrivastava
+    spec:
+      containers:
+      - image: nginx:alpine
+        name: nginx
+        resources: {}
+        ports:
+        - containerPort: 80
+status: {}
