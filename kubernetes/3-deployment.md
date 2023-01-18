@@ -438,3 +438,15 @@ kubectl create deployment new-deployment --image nginx --dry-run=client -o yaml 
 kubectl set image deployment/nginx *=nginx:1.9.1
 kubectl rollout undo deployment/nginx
 ```
+
+
+## Exam
+Creating a pod
+```sh
+kubectl run tsrivastava-pod --image k8s.gcr.io/pause:3.3 -l exam=2,task=1 --dry-run=client -o yaml -- sleep infinity
+```
+
+Creating a deployment
+```sh
+kubectl create deployment  tsrivastava-deploy --image=nginx:alpine --replicas=3 --dry-run=client -o yaml
+```
