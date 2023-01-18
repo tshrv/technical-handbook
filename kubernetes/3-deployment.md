@@ -154,3 +154,287 @@ To **generate** Deployment manifest you should use the same command with these o
 ### Documentation:
 - [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 - [https://cloud.google.com/kubernetes-engine/docs/concepts/deployment](https://cloud.google.com/kubernetes-engine/docs/concepts/deployment)
+
+
+## 4. Scaling Pods in Deployment
+
+Ok, you have created `nginx-deploy` deployment with just `1` pod.
+```sh
+$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5db957f468-gj5d4   1/1     Running   0          23s
+```
+
+Let’s try to scale it mmm… to `6` replicas.
+
+### Task
+Scale `nginx-deploy` deployment to `6` replicas
+
+### Advice
+There’re several ways to do it:
+1. edit a file you used for creating the resource, and re-apply
+2. `kubectl edit deployment ...`
+3. `kubectl scale ...`
+```sh
+kubectl scale --help
+```
+
+### Verify
+```sh
+$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5db957f468-2s6gn   1/1     Running   0          21s
+nginx-deploy-5db957f468-gj5d4   1/1     Running   0          2m25s
+nginx-deploy-5db957f468-hd84d   1/1     Running   0          21s
+nginx-deploy-5db957f468-m9w6n   1/1     Running   0          21s
+nginx-deploy-5db957f468-qkwx5   1/1     Running   0          21s
+nginx-deploy-5db957f468-sjzsp   1/1     Running   0          21s
+```
+
+### Solution
+1. Edit file and reapply
+   1. `kubectl apply -f nginx-deploy.yaml`
+2. `kubectl edit deployment nginx-deploy`
+3. `kubectl scale`
+   1. `kubectl scale --replicas=6 deployment/nginx-deploy`
+   2. `kubectl scale --current-replicas=4 --replicas=6 deployment/nginx-deploy` Scale if provided conditions hold True
+
+### Documentation
+- [https://kubernetes.io/docs/reference/kubectl/cheatsheet/#scaling-resources](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#scaling-resources)
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment)
+
+
+## 5. Deleting Pods
+
+Check `nginx-deploy` related pods. Try to remove a few of them. RS (**ReplicaSet**) which is formed by deployment for managing the number of required pods replicas should bring them back.
+
+Let’s check it!
+
+Before:
+```sh
+$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5db957f468-57fv8   1/1     Running   0          2m33s
+nginx-deploy-5db957f468-996nm   1/1     Running   0          64s
+nginx-deploy-5db957f468-f96z5   1/1     Running   0          64s
+nginx-deploy-5db957f468-qg5nv   1/1     Running   0          64s
+nginx-deploy-5db957f468-sjkd8   1/1     Running   0          64s
+nginx-deploy-5db957f468-wqhfn   1/1     Running   0          64s
+```
+
+After deleting one of the pods:
+```sh
+$ kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5db957f468-57fv8   1/1     Running   0          4m13s
+nginx-deploy-5db957f468-996nm   1/1     Running   0          2m44s
+nginx-deploy-5db957f468-dcm4d   1/1     Running   0          13s
+nginx-deploy-5db957f468-f96z5   1/1     Running   0          2m44s
+nginx-deploy-5db957f468-qg5nv   1/1     Running   0          2m44s
+nginx-deploy-5db957f468-sjkd8   1/1     Running   0          2m44s
+```
+
+### Task
+Delete one of pods and make sure a new one has been created.
+
+### Solution
+`kubectl delete pod nginx-deploy-58c9bf6ffd-bz4d5`
+
+### Documentation
+- [https://kubernetes.io/docs/reference/kubectl/cheatsheet/#deleting-resources](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#deleting-resources)
+
+## 6. Deployments
+
+Create a deployment manifest file `/root/tsrivastava-app.yaml` based on requirements below. And deploy it.
+
+### Requirements
+- Deployment Name: `tsrivastava-app`
+- Deployment Labels:
+  - app: `tsrivastava-app`
+  - student: `tsrivastava`
+- Pod(s) Labels:
+  - deploy: `tsrivastava-app`
+  - kind: `redis`
+  - role: `master`
+  - tier: `db`
+- Container:
+  - Image: `redis:5-alpine`
+  - Port: `6379`
+  - Name: `redis-master`
+- Init Container:
+  - Image: `busybox:1.34`
+  - Command: `sleep 10`
+
+### Please Note!  
+Try to avoid using constructions like:
+```sh
+command: [ "sh", "-c"]
+args: ["sleep 10"]
+```
+or:
+```sh
+command: [ "sh", "-c", "sleep 10"]
+```
+Why?
+Because `sleep` is a regular binary executable file which doesn’t require any shell wrappers
+```sh
+$ which sleep
+/usr/bin/sleep
+```
+
+Also, the solution
+
+### Documentation
+- [https://kubernetes.io/docs/concepts/workloads/pods/pod/](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
+- [https://kubernetes.io/docs/concepts/workloads/pods/init-containers/](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+## 7. Updating Deployment
+
+Let’s get back to the `nginx-deploy` deployment.
+You should upgrade image version using rolling update to `nginx:1.21-alpine`.
+
+Please check ReplicaSets status.
+
+### Task
+- Current deployment release has `nginx:1.19-alpine` image
+- New release should use `nginx:1.21-alpine`
+- use rolling update process
+
+### Rolling Update Routine
+```sh
+kubectl set image --help
+kubectl set image {RESOURCE_TYPE}/{RESOURCE_NAME} {CONTAINER_NAME}={NEW_IMAGE}
+
+# Example:
+# Set a deployment's nginx container image to 'nginx:1.9.1', and its busybox:1.34 container image to 'busybox:1.34'.
+kubectl set image deployment/nginx busybox=busybox:1.34 nginx=nginx:1.9.1
+```
+
+### Verification
+There should be 2 replicas as given below:
+```sh
+$ kubectl get rs -l app=nginx-deploy -o wide
+NAME               DESIRED   CURRENT   READY   ...   IMAGES              ...
+nginx-deploy-...   0         0         0       ...   nginx:1.19-alpine   ...
+nginx-deploy-...   6         6         6       ...   nginx:1.21-alpine   ...
+```
+
+Note, that currently the active deployment is that one which is set to `nginx:1.21-alpine` - `6` replicas
+
+### Solution
+```sh
+kubectl set image deployment/nginx-deploy nginx=nginx:1.21-alpine
+```
+
+### Documentation
+- [https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources](https://kubernetes.io/docs/reference/kubectl/cheatsheet/#updating-resources)
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+## 8. Rolling Back
+
+Now please get back to previous version of the deployment: `nginx:1.21-alpine`. You can get details about `kubectl rollout undo ...` command in the help docs.
+
+Once it’s done, please check what you have got with the same command as previously:
+```sh
+$ kubectl rollout undo deploy nginx-deploy
+
+$ kubectl get rs -l app=nginx-deploy  -o wide
+NAME               DESIRED   CURRENT   READY   ...   IMAGES              ...
+nginx-deploy-...   6         6         6       ...   nginx:1.19-alpine   ...
+nginx-deploy-...   0         0         0       ...   nginx:1.21-alpine   ...
+```
+
+### Solution
+```sh
+kubectl rollout undo deployment/nginx-deploy
+```
+
+### Documentation
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+## 9. Troubleshooting Deployments
+
+New `orange` deployment has been created, but it doesn’t work properly.
+
+### Task
+Find it, figure out the root cause and fix the issue.
+
+### Requirements
+- Pod associated with this deployment should be up and running
+- Pod is waiting for 10 seconds before creating a container
+- Please, change only necessary parameters
+
+> Wait till it’s fully up and running
+
+### Solution
+Edit the deployment to fix the version of images used and command
+```sh
+kubectl edit deployment
+```
+
+### Documentation:
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+## 10. Troubleshooting Deployments
+
+### Task
+A new kind of citrus deployment has been created ( find it by creation time), but there are no pods associated with it.
+
+Figure out the root cause and fix the issue
+
+> Wait till it’s fully up and running
+
+### Solution
+```sh
+$ kubectl get deploy -A
+NAMESPACE     NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+default       nginx-deploy      6/6     6            6           2d2h
+orange        orange            2/2     2            2           9m30s
+lemon         lemon             0/0     0            0           2m48s
+
+$ kubectl scale deployment/lemon -n lemon --replicas=1
+```
+### Documentation
+- [https://kubernetes.io/docs/concepts/workloads/controllers/deployment/](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+
+## 11. Troubleshooting Deployments
+
+### Task
+There’s `/opt/practice/tomato.yaml` manifest file. It is lack of some key details.
+Please add (do not delete any of existing fields) necessary configuration and apply it.
+
+### Solution
+```sh
+```
+### Validation
+```sh
+$  kubectl get deploy -n tomato
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+tomato   3/3     3            3           1
+```
+
+
+## Conclusion
+We have practiced and learned basic concepts and approaches of observing, managing, creating and troubleshooting of Kubernetes Deployment
+
+Hope, you have enjoyed these scenarios
+
+Please note some useful commands:
+```sh
+kubectl get deploy
+kubectl describe deploy deployment-name
+
+kubectl create deployment new-deployment --image nginx:1.19-alpine
+kubectl scale deployment new-deployment --replicas=3
+
+kubectl create deployment new-deployment --image nginx --dry-run=client -o yaml > /root/new-deployment.yaml
+
+kubectl set image deployment/nginx *=nginx:1.9.1
+kubectl rollout undo deployment/nginx
+```

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tsrivastava-app
+    student: tsrivastava
+  name: tsrivastava-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deploy: tsrivastava-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        # app: tsrivastava-app
+        deploy: tsrivastava-app
+        kind: redis
+        role: master
+        tier: db
+    spec:
+      initContainers:
+        - name: busybox-init-container
+          image: busybox:1.34
+          command: ["sleep", "10"]
+      containers:
+      - image: redis:5-alpine
+        name: redis-master
+        resources: {}
+        ports:
+        - containerPort: 6379
+status: {}
