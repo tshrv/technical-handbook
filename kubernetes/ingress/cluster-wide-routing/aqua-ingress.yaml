@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aqua-ingress
+spec:
+  rules:
+  - host: aqua.k8slab.playpit.net
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: aqua-svc
+            port: 
+              number: 80

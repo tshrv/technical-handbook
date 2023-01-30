@@ -1,0 +1,57 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sorry-page
+  namespace: ingress-default-backend
+  labels:
+    app: sorry-page
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sorry-page
+  template:
+    metadata:
+      labels:
+        app: sorry-page
+    spec:
+      containers:
+      - name: sorry-page
+        image: sbeliakou/http-sorry-page:v1
+---
+
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: sorry-page-service
+  namespace: ingress-default-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: sorry-page
+  ports:
+  - port: 80
+    targetPort: 80
+---
+
+# ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 
+spec:
+  default-backend:
+    k: v
+  rules:
+  - host: lights.k8slab.playpit.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ingress-nginx
+            port:
+              number: 8080

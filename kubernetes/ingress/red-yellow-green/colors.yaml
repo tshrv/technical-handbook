@@ -1,0 +1,165 @@
+# deployments
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: red-color
+  labels:
+    app: red
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: red
+  template:
+    metadata:
+      labels:
+        app: red
+        category: color
+    spec:
+      containers:
+      - name: red-color
+        image: sbeliakou/color:v1
+        env:
+        - name: COLOR
+          value: red
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-color
+  labels:
+    app: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: green
+  template:
+    metadata:
+      labels:
+        app: green
+        category: color
+    spec:
+      containers:
+      - name: green-color
+        image: sbeliakou/color:v1
+        env:
+        - name: COLOR
+          value: green
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yellow-color
+  labels:
+    app: yellow
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: yellow
+  template:
+    metadata:
+      labels:
+        app: yellow
+        category: color
+    spec:
+      containers:
+      - name: yellow-color
+        image: sbeliakou/color:v1
+        env:
+        - name: COLOR
+          value: yellow
+---
+
+# services
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: red-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: red
+  ports:
+  - port: 8080
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: green-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: green
+  ports:
+  - port: 8080
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yellow-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: yellow
+  ports:
+  - port: 8080
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: switch
+spec:
+  type: LoadBalancer
+  selector:
+    category: color
+  ports:
+  - port: 80
+    targetPort: 80
+---
+
+# ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lights-ingress
+spec:
+  rules:
+  - host: lights.k8slab.playpit.net
+    http:
+      paths:
+      - path: /red
+        pathType: Prefix
+        backend:
+          service:
+            name: red-svc
+            port:
+              number: 8080
+      - path: /green
+        pathType: Prefix
+        backend:
+          service:
+            name: green-svc
+            port:
+              number: 8080
+      - path: /yellow
+        pathType: Prefix
+        backend:
+          service:
+            name: yellow-svc
+            port:
+              number: 8080
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: switch
+            port:
+              number: 80

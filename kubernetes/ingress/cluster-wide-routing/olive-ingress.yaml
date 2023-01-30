@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: olive-ingress
+spec:
+  rules:
+  - host: olive.k8slab.playpit.net
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: olive-svc
+            port: 
+              number: 80
