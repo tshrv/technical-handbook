@@ -1,0 +1,64 @@
+
+# # kubectl create ns statging
+
+# deployments
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookshelf
+  namespace: staging
+  labels:
+    app: bookshelf
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: bookshelf
+  template:
+    metadata:
+      labels:
+        app: bookshelf
+    spec:
+      containers:
+      - name: bookshelf
+        image: sbeliakou/bookshelf:v1
+
+---
+
+# services
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookshelf-svc
+  namespace: staging
+spec:
+  type: ClusterIP
+  selector:
+    app: bookshelf
+  ports:
+  - port: 8090
+    targetPort: 8080
+    # nodePort: 31122
+---
+
+# ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bookshelf-ingress
+  namespace: staging
+spec:
+  rules:
+  - host: bookshelf.stage.k8slab.playpit.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bookshelf-svc
+            port:
+              number: 8090
