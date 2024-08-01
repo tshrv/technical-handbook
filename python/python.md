@@ -277,3 +277,12 @@ Alternatives
 
 - **Multiprocessing:** For CPU-bound tasks, using the `multiprocessing` module can be a better alternative as it spawns separate processes, each with its own GIL.
 - **C Extensions:** Writing performance-critical sections in C or using libraries like NumPy (which release the GIL) can also help bypass GIL limitations.
+
+## OOP
+
+- Class: Blueprint of an object, no data
+- Object: An instance of a class with real data
+- Encapsulation: Bundling attributes and methods
+- Inheritance: Inherit attributes and methods
+- Polymorphism: Common base class and behaviour
+- Abstraction: hiding unnecessary details
