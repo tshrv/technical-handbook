@@ -1,0 +1,6 @@
+- Request route
+- Serializers / Deserializers
+- Viewsets
+- Middlewares
+- Template tags
+-

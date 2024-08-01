@@ -8,3 +8,5 @@
   - Mutli Table Inheritance
 - Aggregation
 - Group and order by
+- Multiple databases
+- n:n relationship attributes
