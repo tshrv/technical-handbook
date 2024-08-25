@@ -49,8 +49,20 @@ If `CMD` is used to provide **default arguments** for the `ENTRYPOINT` instructi
 ENTRYPOINT ["python3"]
 CMD ["manage.py", "runserver]
 ```
+ENTRYPOINT specifies that python should be run, and CMD provides app.py as the default argument. You can still override CMD arguments if needed by specifying different arguments when running the container.
+
+Summary:
+- Use ENTRYPOINT for defining the main executable or script.
+- Use CMD for specifying default arguments or commands that can be overridden.
+
+For a Python app, you might use ENTRYPOINT if you want to ensure that a specific script is always run, or use CMD if you want to provide a default command that can be easily overridden.
 
 ### `ARG` and `ENV`
+
+- `ARG`: Used for build-time variables that influence how the image is created. They are not available after the build process ends. `ARG APP_VERSION=1.0`, `docker build --build-arg APP_VERSION=2.0 -t myapp .`
+- `ENV`: Used for setting environment variables that persist both during the build process and at runtime. They are accessible to the processes running in the container. `ENV APP_ENV=production`, 
+
+Use ARG when you need to pass build-time configuration or secrets, and use ENV for setting configuration values that need to be available to the running application.
 
 # More topics
 
