@@ -1,0 +1,25 @@
+# Topics
+
+- Design Patterns [refactoring.guru](https://refactoring.guru/design-patterns)
+  - Creational
+    - Factory: Focuses on creating one specific type of product, allowing subclasses to decide which concrete class to instantiate. `if animal_type == 'dog': return Dog()`
+    - Abstract Factory: Creates families of related products, ensuring that the objects created are compatible and consistent with one another (e.g., a GUI toolkit with related widgets like buttons and checkboxes). `if platform == "windows": client_code(WindowsFactory()) else client_code(MacFactory())`
+    - Builder: constructs complex objects step-by-step, allowing different configurations and variations while keeping the construction process separate from the object’s final representation.
+    - Prototype: creates new objects by cloning existing instances, allowing for efficient object creation and dynamic configuration. `copy.deepcopy(self)`
+    - Singleton: The Singleton pattern restricts a class to a single instance and provides global access to it. `cls._instance`
+  - Structural
+    - Adapter: The Adapter pattern allows incompatible interfaces to work together by converting one interface into another that the client expects.`def print(self, text): return self.old_printer.print_old(text)`
+    - Bridge: The Bridge pattern decouples an abstraction from its implementation, allowing them to vary independently and evolve separately. `def draw(self): return self.drawing_api.draw_circle(self.x, self.y, self.radius)`
+    - Decorator: The Decorator pattern adds responsibilities to objects dynamically, providing a flexible alternative to subclassing for extending functionality.
+    - Facade: The Facade pattern provides a simplified and unified interface to a complex subsystem, making it easier for clients to interact with.
+    - Proxy: The Proxy pattern provides a surrogate for another object, controlling access and potentially adding additional behavior without modifying the original object. `Proxy(RealSubject())`
+  - Behavioural
+    - Chain of responsibility: The Chain of Responsibility pattern allows a request to pass through a chain of handlers, where each handler either processes the request or passes it to the next handler. `self.successor.handle_request(request)`
+    - Command: The Command pattern encapsulates a request as an object, allowing you to decouple the sender from the receiver and enabling functionalities like undo/redo, queuing, and logging. `remote = RemoteControl(); remote.set_command(light_on); remote.press_button()`
+    - Iterator: The Iterator pattern provides a way to sequentially access elements of a collection without exposing its underlying structure, enabling traversal of the collection in a standardized manner. `for`, `__iter__` and `__next__`
+    - Mediator: The Mediator pattern centralizes communication between objects, promoting loose coupling and simplifying the management of interactions within a system. `self._mediator.notify`
+    - Observer: The Observer pattern establishes a one-to-many dependency between objects so that when one object changes state, all dependent objects are automatically notified and updated. `[observer.update(self._state) for observer in self._observers]`
+    - State: The State pattern allows an object to change its behavior when its internal state changes, enabling it to appear as if it has changed its class and managing state-specific behavior in separate classes. `print("Handling state A"); context.state = ConcreteStateB()`
+    - Strategy: The Strategy pattern defines a family of algorithms, encapsulates them, and makes them interchangeable, allowing the client to select and switch strategies dynamically. `context.set_strategy(ConcreteStrategyB()); context.execute_strategy("data2")`
+    - Template Method: The Template Method pattern defines the skeleton of an algorithm in a base class, allowing subclasses to override specific steps without changing the overall structure. Example- Django's class based views.
+    - Registry: The Registry pattern provides a global access point for managing and locating objects or services, centralizing their registration and retrieval. `Registry.register("a", ConcreteA("Object A"))`
