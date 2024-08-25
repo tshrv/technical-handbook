@@ -7,3 +7,5 @@
 - Loops
 - Type hinting
 - Generic types
+- Promise
+- Observable
